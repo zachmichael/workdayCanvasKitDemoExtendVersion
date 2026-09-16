@@ -1,0 +1,186 @@
+{
+  "id": "workerDirectory",
+  "include": [
+    "workerData.script"
+  ],
+  "presentation": {
+    "pageType": "EDIT",
+    "standardEditButtonsHidden": true,
+    "title": {
+      "type": "title",
+      "label": "Data Display"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "The React version hand-built search, sorting and pagination with <code>useState</code> and <code>useMemo</code> &mdash; roughly 60 lines. Extend's <code>grid</code> does all three itself: set <code>sortableAndFilterable</code> on a column and the platform supplies the sort control and the filter box, and <code>autoPaging</code> supplies pagination. The only thing left to write is the team filter, because that one drives which rows the grid receives."
+        },
+        {
+          "type": "fieldSet",
+          "title": "Filter",
+          "children": [
+            {
+              "type": "dropdown",
+              "id": "teamFilter",
+              "label": "Team",
+              "instanceList": "<% list:join([{'id': 'All teams', 'descriptor': 'All teams'}], workerData.getTeamInstances()) %>",
+              "onChange": "<% workerGrid.rows = workerData.getWorkersForTeam(self.value) %>"
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "id": "workerGrid",
+          "enabled": false,
+          "doNotAdd": true,
+          "doNotRemoveRow": true,
+          "autoPaging": true,
+          "rowVariableName": "worker",
+          "rows": "<% workerData.getWorkers() %>",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "workerName",
+              "label": "Worker",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% worker.name %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "workerTitle",
+              "label": "Job title",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% worker.title %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "workerTeam",
+              "label": "Team",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% worker.team %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "workerLocation",
+              "label": "Location",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% worker.location %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "workerStatus",
+              "label": "Status",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% worker.status %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "workerAction",
+              "label": "Action",
+              "cellTemplate": {
+                "type": "button",
+                "label": "Request time off",
+                "action": "LINK",
+                "taskReference": {
+                  "taskId": "forms"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Status counts",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "The React app rendered status chips with a custom <code>createStencil</code> component, because Canvas Kit's <code>StatusIndicator</code> is deprecated. Extend has no styling API at all, so the equivalent is simply derived data in a second grid."
+            },
+            {
+              "type": "grid",
+              "id": "statusGrid",
+              "enabled": false,
+              "doNotAdd": true,
+              "doNotRemoveRow": true,
+              "rowVariableName": "row",
+              "rows": "<% workerData.getStatusBreakdown() %>",
+              "columns": [
+                {
+                  "type": "column",
+                  "columnId": "statusName",
+                  "label": "Status",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.status %>"
+                  }
+                },
+                {
+                  "type": "column",
+                  "columnId": "statusCount",
+                  "label": "Workers",
+                  "cellTemplate": {
+                    "type": "number",
+                    "value": "<% row.workers %>"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "pageActionButton",
+          "id": "toggleGridSource",
+          "visible": true,
+          "label": "Show code",
+          "onClick": "<% gridSourceSection.visible = !gridSourceSection.visible; toggleGridSource.label = gridSourceSection.visible ? 'Hide code' : 'Show code'; %>"
+        },
+        {
+          "type": "section",
+          "id": "gridSourceSection",
+          "visible": false,
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "<code>{ \"type\": \"grid\", \"id\": \"workerGrid\", \"autoPaging\": true,</code><br/><code>&nbsp;&nbsp;\"rows\": \"&lt;% workerData.getWorkers() %&gt;\", \"rowVariableName\": \"worker\",</code><br/><code>&nbsp;&nbsp;\"columns\": [ { \"type\": \"column\", \"columnId\": \"workerName\", \"label\": \"Worker\",</code><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;\"sortableAndFilterable\": true,</code><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;\"cellTemplate\": { \"type\": \"text\", \"value\": \"&lt;% worker.name %&gt;\" } } ] }</code>"
+            }
+          ],
+          "label": "PMD source"
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}

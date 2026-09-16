@@ -1,0 +1,169 @@
+{
+  "id": "navigation",
+  "include": [
+    "workerData.script"
+  ],
+  "presentation": {
+    "pageType": "EDIT",
+    "standardEditButtonsHidden": true,
+    "title": {
+      "type": "title",
+      "label": "Navigation"
+    },
+    "tabs": [
+      {
+        "type": "section",
+        "label": "Summary",
+        "children": [
+          {
+            "type": "richText",
+            "enabled": false,
+            "value": "Tabs are declared on the <code>presentation</code> object, as a sibling of <code>body</code> &mdash; not nested in the widget tree. Two consequences that bit the React port: a page needs at least <b>two</b> tabs or the template breaks, and a non-empty <code>body</code> is required and always renders <i>above</i> the tabs regardless of key order.<br/><br/>Unlike Canvas Kit there is no data-id pairing to get wrong, because each tab carries its own children rather than being matched to a separate panel list."
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "label": "Team",
+        "children": [
+          {
+            "type": "grid",
+            "id": "teamTabGrid",
+            "enabled": false,
+            "doNotAdd": true,
+            "doNotRemoveRow": true,
+            "rowVariableName": "row",
+            "rows": "<% workerData.getHeadcountByTeam() %>",
+            "columns": [
+              {
+                "type": "column",
+                "columnId": "teamName",
+                "label": "Team",
+                "cellTemplate": {
+                  "type": "text",
+                  "value": "<% row.team %>"
+                }
+              },
+              {
+                "type": "column",
+                "columnId": "teamHeadcount",
+                "label": "Headcount",
+                "cellTemplate": {
+                  "type": "number",
+                  "value": "<% row.headcount %>"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "label": "Documents",
+        "children": [
+          {
+            "type": "richText",
+            "enabled": false,
+            "value": "Contracts, reviews and signed policies would live here."
+          }
+        ]
+      }
+    ],
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "Canvas Kit's navigation family was Tabs, Breadcrumbs, Menu and SegmentedControl. Extend covers the first with <code>tabs</code> and the third with <code>dropDownButton</code>. There is no breadcrumb widget and no segmented control &mdash; page-to-page movement is the platform's job, driven by AMD <code>tasks</code> and <code>flows</code>, so an app declares routes rather than drawing navigation."
+        },
+        {
+          "type": "fieldSet",
+          "title": "Menu, via dropDownButton",
+          "children": [
+            {
+              "type": "dropDownButton",
+              "id": "rowActions",
+              "label": "Worker actions",
+              "action": "PRIMARY",
+              "values": [
+                {
+                  "label": "Edit worker",
+                  "taskReference": {
+                    "taskId": "forms"
+                  }
+                },
+                {
+                  "label": "View directory",
+                  "taskReference": {
+                    "taskId": "workerDirectory"
+                  }
+                },
+                {
+                  "label": "Back to home",
+                  "taskReference": {
+                    "taskId": "home"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Routing, the BrowserRouter equivalent",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "Every page in this app is registered in <code>canvasKitDemoExtend.amd</code> as a task with a <code>routingPattern</code>. That file is the direct analogue of the React app's <code>&lt;Routes&gt;</code> block &mdash; and, unlike GitHub Pages, deep links need no 404 fallback because Workday resolves the route server side."
+            },
+            {
+              "type": "grid",
+              "id": "routeGrid",
+              "enabled": false,
+              "doNotAdd": true,
+              "doNotRemoveRow": true,
+              "rowVariableName": "route",
+              "rows": "<% [ {'task': 'home', 'pattern': '/'}, {'task': 'buttons', 'pattern': '/buttons'}, {'task': 'forms', 'pattern': '/forms'}, {'task': 'workerDirectory', 'pattern': '/workerDirectory'}, {'task': 'feedback', 'pattern': '/feedback'}, {'task': 'navigation', 'pattern': '/navigation'}, {'task': 'charts', 'pattern': '/charts'}, {'task': 'scripting', 'pattern': '/scripting'} ] %>",
+              "columns": [
+                {
+                  "type": "column",
+                  "columnId": "routeTask",
+                  "label": "AMD task id",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% route.task %>"
+                  }
+                },
+                {
+                  "type": "column",
+                  "columnId": "routePattern",
+                  "label": "routingPattern",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% route.pattern %>"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}

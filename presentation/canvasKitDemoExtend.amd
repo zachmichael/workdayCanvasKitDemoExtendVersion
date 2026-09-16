@@ -1,0 +1,86 @@
+{
+  "applicationId": "canvasKitDemoExtend",
+  "appProperties": [
+    {
+      "key": "showcaseName",
+      "value": "Canvas Kit Demo (Extend)"
+    }
+  ],
+  "flowDefinitions": [],
+  "dataProviders": [
+    {
+      "key": "wdayRef",
+      "value": "<% apiGatewayEndpoint + '/referenceData' %>"
+    },
+    {
+      "key": "wdayCom",
+      "value": "<% apiGatewayEndpoint + '/common/v1' %>"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "home",
+      "routingPattern": "/",
+      "page": {
+        "id": "home",
+        "descriptor": "Canvas Kit Demo"
+      }
+    },
+    {
+      "id": "buttons",
+      "routingPattern": "/buttons",
+      "page": {
+        "id": "buttons",
+        "descriptor": "Buttons"
+      }
+    },
+    {
+      "id": "forms",
+      "routingPattern": "/forms",
+      "page": {
+        "id": "forms",
+        "descriptor": "Forms and Inputs"
+      }
+    },
+    {
+      "id": "workerDirectory",
+      "routingPattern": "/workerDirectory",
+      "page": {
+        "id": "workerDirectory",
+        "descriptor": "Data Display"
+      }
+    },
+    {
+      "id": "feedback",
+      "routingPattern": "/feedback",
+      "page": {
+        "id": "feedback",
+        "descriptor": "Feedback"
+      }
+    },
+    {
+      "id": "navigation",
+      "routingPattern": "/navigation",
+      "page": {
+        "id": "navigation",
+        "descriptor": "Navigation"
+      }
+    },
+    {
+      "id": "charts",
+      "routingPattern": "/charts",
+      "page": {
+        "id": "charts",
+        "descriptor": "Charts"
+      }
+    },
+    {
+      "id": "scripting",
+      "routingPattern": "/scripting",
+      "page": {
+        "id": "scripting",
+        "descriptor": "PMD Scripting"
+      }
+    }
+  ]
+}

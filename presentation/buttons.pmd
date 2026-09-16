@@ -1,0 +1,204 @@
+{
+  "id": "buttons",
+  "presentation": {
+    "pageType": "EDIT",
+    "standardEditButtonsHidden": true,
+    "title": {
+      "type": "title",
+      "label": "Buttons"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "richText",
+          "id": "buttonsIntro",
+          "enabled": false,
+          "value": "Canvas Kit has four button intents chosen by emphasis. Extend has the same idea under a different name: the <code>action</code> attribute, which takes <code>PRIMARY</code>, <code>AUXILIARY</code> or <code>LINK</code>. Leaving <code>action</code> off gives the secondary treatment. There is no size prop and no icon-only variant &mdash; the UI engine decides both."
+        },
+        {
+          "type": "fieldSet",
+          "title": "Intents",
+          "children": [
+            {
+              "type": "button",
+              "id": "primaryButton",
+              "label": "Submit",
+              "action": "PRIMARY",
+              "taskReference": {
+                "taskId": "home"
+              }
+            },
+            {
+              "type": "button",
+              "id": "secondaryButton",
+              "label": "Save draft",
+              "taskReference": {
+                "taskId": "home"
+              }
+            },
+            {
+              "type": "button",
+              "id": "auxiliaryButton",
+              "label": "Cancel",
+              "action": "AUXILIARY",
+              "taskReference": {
+                "taskId": "home"
+              }
+            },
+            {
+              "type": "button",
+              "id": "linkButton",
+              "label": "Learn more",
+              "action": "LINK",
+              "taskReference": {
+                "taskId": "home"
+              }
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Grouped and menu buttons",
+          "children": [
+            {
+              "type": "buttonGroup",
+              "id": "leaveTypeGroup",
+              "label": "buttonGroup",
+              "action": "PRIMARY",
+              "children": [
+                {
+                  "type": "button",
+                  "label": "Paid time off",
+                  "action": "PRIMARY",
+                  "taskReference": {
+                    "taskId": "forms"
+                  }
+                },
+                {
+                  "type": "button",
+                  "label": "Sick leave",
+                  "action": "PRIMARY",
+                  "taskReference": {
+                    "taskId": "forms"
+                  }
+                },
+                {
+                  "type": "button",
+                  "label": "Parental leave",
+                  "action": "PRIMARY",
+                  "taskReference": {
+                    "taskId": "forms"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "dropDownButton",
+              "id": "workerActions",
+              "label": "Worker actions",
+              "action": "PRIMARY",
+              "values": [
+                {
+                  "label": "View directory",
+                  "taskReference": {
+                    "taskId": "workerDirectory"
+                  }
+                },
+                {
+                  "label": "Request time off",
+                  "taskReference": {
+                    "taskId": "forms"
+                  }
+                },
+                {
+                  "label": "Back to home",
+                  "taskReference": {
+                    "taskId": "home"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Buttons that run script instead of navigating",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "A <code>button</code> goes somewhere. A <code>pageActionButton</code> runs an <code>onClick</code> expression and stays put &mdash; this is the Extend equivalent of an onClick handler that calls setState."
+            },
+            {
+              "type": "pageActionButton",
+              "id": "clickCounterButton",
+              "visible": true,
+              "label": "Click me",
+              "onClick": "<% clickCount.value = clickCount.value + 1 %>"
+            },
+            {
+              "type": "number",
+              "id": "clickCount",
+              "label": "Times clicked",
+              "enabled": false,
+              "value": "<% 0 %>"
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "No disabled state, and external links",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "Canvas Kit buttons take <code>disabled</code>. Extend's <code>button</code> has no such attribute &mdash; it exposes <code>visible</code> and <code>render</code> instead. A button that should not be pressable is hidden, not greyed out, which is a genuine behavioural difference rather than a naming one."
+            },
+            {
+              "type": "externalLink",
+              "id": "canvasKitLink",
+              "label": "externalLink",
+              "descriptor": "Workday Canvas Kit documentation",
+              "url": "https://workday.github.io/canvas-kit/"
+            }
+          ]
+        },
+        {
+          "type": "pageActionButton",
+          "id": "toggleButtonsSource",
+          "visible": true,
+          "label": "Show code",
+          "onClick": "<% buttonsSourceSection.visible = !buttonsSourceSection.visible; toggleButtonsSource.label = buttonsSourceSection.visible ? 'Hide code' : 'Show code'; %>"
+        },
+        {
+          "type": "section",
+          "id": "buttonsSourceSection",
+          "visible": false,
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "<code>{ \"type\": \"button\", \"label\": \"Submit\", \"action\": \"PRIMARY\", \"taskReference\": { \"taskId\": \"home\" } }</code><br/><code>{ \"type\": \"button\", \"label\": \"Save draft\", \"taskReference\": { \"taskId\": \"home\" } }</code><br/><code>{ \"type\": \"button\", \"label\": \"Cancel\", \"action\": \"AUXILIARY\", \"taskReference\": { \"taskId\": \"home\" } }</code><br/><code>{ \"type\": \"pageActionButton\", \"label\": \"Click me\", \"onClick\": \"&lt;% clickCount.value = clickCount.value + 1 %&gt;\" }</code>"
+            }
+          ],
+          "label": "PMD source"
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}

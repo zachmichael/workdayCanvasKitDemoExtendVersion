@@ -1,0 +1,220 @@
+{
+  "id": "forms",
+  "include": [
+    "workerData.script"
+  ],
+  "presentation": {
+    "pageType": "EDIT",
+    "standardEditButtonsHidden": true,
+    "title": {
+      "type": "title",
+      "label": "Forms and Inputs"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "Canvas Kit wraps every input in a <code>FormField</code> that owns the label, hint and error state. Extend has no wrapper: <code>label</code> is an attribute on the widget itself, and grouping is done with <code>fieldSet</code>. Validation is declarative too &mdash; <code>required</code> and <code>errorMessage</code> rather than a <code>touched</code> flag in component state."
+        },
+        {
+          "type": "fieldSet",
+          "title": "A time-off request",
+          "children": [
+            {
+              "type": "text",
+              "id": "workerName",
+              "label": "Worker name",
+              "required": true,
+              "value": "",
+              "enabled": true
+            },
+            {
+              "type": "dropdown",
+              "id": "leaveType",
+              "label": "Leave type",
+              "required": true,
+              "instanceList": [
+                {
+                  "id": "pto",
+                  "descriptor": "Paid time off"
+                },
+                {
+                  "id": "sick",
+                  "descriptor": "Sick leave"
+                },
+                {
+                  "id": "parental",
+                  "descriptor": "Parental leave"
+                },
+                {
+                  "id": "unpaid",
+                  "descriptor": "Unpaid leave"
+                }
+              ]
+            },
+            {
+              "type": "date",
+              "id": "startDate",
+              "label": "First day off",
+              "enabled": true,
+              "value": "<% date:getTodaysDate(date:getDateTimeZone(userTimeZone)) %>"
+            },
+            {
+              "type": "number",
+              "id": "daysRequested",
+              "label": "Days requested",
+              "enabled": true,
+              "value": "<% 1 %>"
+            },
+            {
+              "type": "textArea",
+              "id": "requestReason",
+              "label": "Reason",
+              "enabled": true,
+              "value": ""
+            },
+            {
+              "type": "checkBox",
+              "id": "notifyManager",
+              "label": "Notify my manager immediately",
+              "value": "<% true %>"
+            },
+            {
+              "type": "pageActionButton",
+              "id": "submitRequest",
+              "visible": true,
+              "label": "Submit request",
+              "onClick": "<% if (empty(workerName.value)) { requestSummary.value = 'Enter the worker this request is for.'; } else { requestSummary.value = `Request recorded for {{workerName.value}}: {{daysRequested.value}} day(s) starting {{startDate.value}}.`; } %>"
+            },
+            {
+              "type": "richText",
+              "id": "requestSummary",
+              "enabled": false,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Field states",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "The React demo showed default, caution, error and disabled variants of one input. Extend exposes <code>required</code>, <code>errorMessage</code>, <code>enabled</code> and <code>hint</code>; there is no caution tier."
+            },
+            {
+              "type": "text",
+              "id": "defaultField",
+              "label": "Default",
+              "value": "Looks good",
+              "helpText": "Helper text sits below the input.",
+              "enabled": true
+            },
+            {
+              "type": "text",
+              "id": "requiredField",
+              "label": "Required",
+              "required": true,
+              "value": "",
+              "helpText": "Leave this empty and submit to see the platform error treatment.",
+              "enabled": true
+            },
+            {
+              "type": "number",
+              "id": "boundedField",
+              "label": "Constrained number",
+              "value": "<% 4 %>",
+              "minimumValue": "0",
+              "maximumValue": "30",
+              "helpText": "Values outside 0 to 30 are rejected by the widget, not by page script.",
+              "enabled": true
+            },
+            {
+              "type": "text",
+              "id": "disabledField",
+              "label": "Disabled",
+              "value": "Read only",
+              "enabled": false
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Choice widgets",
+          "children": [
+            {
+              "type": "radioGroup",
+              "id": "teamRadio",
+              "label": "Team",
+              "instanceList": "<% workerData.getTeamInstances() %>"
+            },
+            {
+              "type": "checkBoxList",
+              "id": "notificationPrefs",
+              "label": "Notifications",
+              "instanceList": [
+                {
+                  "id": "email",
+                  "descriptor": "Email notifications"
+                },
+                {
+                  "id": "push",
+                  "descriptor": "Push notifications"
+                },
+                {
+                  "id": "digest",
+                  "descriptor": "Weekly digest"
+                }
+              ]
+            },
+            {
+              "type": "currency",
+              "id": "dailyRate",
+              "label": "Daily rate",
+              "currencyCode": "USD",
+              "value": "420.00",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "type": "pageActionButton",
+          "id": "toggleFormsSource",
+          "visible": true,
+          "label": "Show code",
+          "onClick": "<% formsSourceSection.visible = !formsSourceSection.visible; toggleFormsSource.label = formsSourceSection.visible ? 'Hide code' : 'Show code'; %>"
+        },
+        {
+          "type": "section",
+          "id": "formsSourceSection",
+          "visible": false,
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "<code>{ \"type\": \"text\", \"id\": \"workerName\", \"label\": \"Worker name\", \"required\": true }</code><br/><code>{ \"type\": \"dropdown\", \"label\": \"Leave type\", \"instanceList\": [ { \"id\": \"pto\", \"descriptor\": \"Paid time off\" } ] }</code><br/><code>{ \"type\": \"radioGroup\", \"label\": \"Team\", \"instanceList\": \"&lt;% workerData.getTeamInstances() %&gt;\" }</code>"
+            }
+          ],
+          "label": "PMD source"
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "id": "feedback",
+  "presentation": {
+    "pageType": "EDIT",
+    "standardEditButtonsHidden": true,
+    "title": {
+      "type": "title",
+      "label": "Feedback"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "This is the page where the two platforms diverge most. Canvas Kit ships Banner, Toast, Modal, Dialog, Popup, Tooltip, LoadingDots and Skeleton as components you compose. Extend has no toast and no inline banner widget: transient and blocking feedback are <i>page transitions</i>, declared as flows in the AMD, not components you drop into a tree. What is left in-page is a smaller set &mdash; a progress indicator, a congratulations popup, inline messages you show and hide, and per-widget help text."
+        },
+        {
+          "type": "fieldSet",
+          "title": "Inline messages, the Banner equivalent",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "There is no Banner widget. An inline message is a <code>richText</code> whose <code>visible</code> you flip from script &mdash; which is also how the React app's conditional Banner worked, just without the styling hooks."
+            },
+            {
+              "type": "pageActionButton",
+              "id": "showInfoMessage",
+              "visible": true,
+              "label": "Show info message",
+              "onClick": "<% infoMessage.visible = true; errorMessage.visible = false; %>"
+            },
+            {
+              "type": "pageActionButton",
+              "id": "showErrorMessage",
+              "visible": true,
+              "label": "Show error message",
+              "onClick": "<% errorMessage.visible = true; infoMessage.visible = false; %>"
+            },
+            {
+              "type": "pageActionButton",
+              "id": "clearMessages",
+              "visible": true,
+              "label": "Clear",
+              "onClick": "<% infoMessage.visible = false; errorMessage.visible = false; %>"
+            },
+            {
+              "type": "richText",
+              "id": "infoMessage",
+              "visible": false,
+              "enabled": false,
+              "value": "<b>3 approvals require your attention.</b>"
+            },
+            {
+              "type": "richText",
+              "id": "errorMessage",
+              "visible": false,
+              "enabled": false,
+              "value": "<b>Payroll sync failed for 2 workers.</b>"
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Progress, the LoadingDots equivalent",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "Extend has no Skeleton and no spinner you place yourself &mdash; the platform shows its own loading state while a page's endpoints resolve. What you <i>can</i> drive is determinate progress."
+            },
+            {
+              "type": "dynamicSection",
+              "id": "progressSection",
+              "data": "<% {'data': []} %>",
+              "dataVariableName": "progressData",
+              "children": [
+                {
+                  "type": "progressIndicator",
+                  "id": "reviewProgress",
+                  "label": "Time-off requests reviewed",
+                  "value": "<% progressData.reviewed ?? 0 %>",
+                  "maximumValue": "100",
+                  "isPercentage": true
+                }
+              ]
+            },
+            {
+              "type": "pageActionButton",
+              "id": "advanceProgress",
+              "visible": true,
+              "label": "Review another",
+              "onClick": "<% let reviewed = reviewProgress.value; if (reviewed < 100) { reviewed = reviewed + 20; } progressSection.data = {'reviewed': reviewed}; %>"
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Help text, the Tooltip equivalent",
+          "children": [
+            {
+              "type": "text",
+              "id": "guidedField",
+              "label": "Approval routing",
+              "value": "Manager",
+              "enabled": true,
+              "guide": {
+                "type": "guide",
+                "title": "Who approves this?",
+                "text": "Requests over 10 days route to your manager's manager. A guide is the closest thing Extend has to a Canvas Kit Tooltip, but it is always attached to a field rather than to any element you choose."
+              }
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Completion, the Toast equivalent",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "<code>congratulationsPopup</code> is the platform's success moment. Unlike a Canvas Kit Toast it is not dismissible, not stackable and not positionable &mdash; it fires on page load to mark the end of a flow."
+            },
+            {
+              "type": "congratulationsPopup",
+              "id": "requestSubmittedPopup",
+              "label": "Request submitted",
+              "textCongrats": "Request submitted",
+              "textSubmitted": "Your time-off request went to your manager."
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}

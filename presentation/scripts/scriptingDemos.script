@@ -1,0 +1,39 @@
+/*
+ * Demonstrations for the scripting page: the PMD-script equivalents of the
+ * derived values the React app computed with useMemo and array methods.
+ */
+
+/* Canvas Kit: employees.filter(e => e.team === team).map(e => e.name).join(', ') */
+var namesForTeam = function(workers, team) {
+  const matching = list:filter(workers, 'team', team);
+  return string:formatListToString(', ', list:mapAttribute(matching, 'name'));
+}
+
+/* Canvas Kit: [...workers].sort((a, b) => a.location.localeCompare(b.location)) */
+var sortedByLocation = function(workers) {
+  return list:sort(workers, 'location', true);
+}
+
+/* A closure, the closest PMD script gets to an arrow function. */
+var longTitles = function(workers) {
+  return workers.filter(worker => {size(worker.title) > 15});
+}
+
+/* String interpolation uses backticks and {{ }}, not ${ }. */
+var greetingFor = function(worker) {
+  return `{{worker.name}} is a {{worker.title}} on the {{worker.team}} team, based in {{worker.location}}.`;
+}
+
+/* Date handling has no JS Date equivalent; everything goes through date:. */
+var reviewDueDate = function(daysFromNow) {
+  const today = date:getTodaysDate(date:getDateTimeZone('UTC'));
+  return date:format(date:add(date:parseDateString(today), 'DAY', daysFromNow), 'd MMM yyyy');
+}
+
+{
+  "namesForTeam": namesForTeam,
+  "sortedByLocation": sortedByLocation,
+  "longTitles": longTitles,
+  "greetingFor": greetingFor,
+  "reviewDueDate": reviewDueDate
+}

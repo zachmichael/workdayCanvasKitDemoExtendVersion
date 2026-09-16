@@ -1,0 +1,109 @@
+{
+  "id": "charts",
+  "include": [
+    "workerData.script"
+  ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Charts"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "This page replaces the React app's Design Tokens page, which has no Extend counterpart. Charts are the platform's richest visual family and the clearest example of what you get for giving up styling control: colour, legend, axis treatment and accessibility mode are all supplied, and the app only declares which field drives which visual channel.<br/><br/>All three charts read the same <code>workerData.script</code> module the directory page uses."
+        },
+        {
+          "type": "section",
+          "children": [
+            {
+              "type": "clusteredBarChart2",
+              "id": "headcountBar",
+              "data": "<% workerData.getHeadcountByTeam() %>",
+              "dataVariableName": "row",
+              "barOrientation": "VERTICAL",
+              "categoryDataSet": {
+                "name": "Team",
+                "value": "<% row.team %>"
+              },
+              "measurementDataSets": [
+                {
+                  "name": "Headcount",
+                  "value": "<% row.headcount %>"
+                }
+              ]
+            }
+          ],
+          "label": "Headcount by team"
+        },
+        {
+          "type": "section",
+          "children": [
+            {
+              "type": "donutChart2",
+              "id": "statusDonut",
+              "data": "<% workerData.getStatusBreakdown() %>",
+              "dataVariableName": "row",
+              "sliceSizeDataSet": {
+                "name": "Workers",
+                "value": "<% row.workers %>"
+              },
+              "sliceColorDataSet": {
+                "name": "Status",
+                "value": "<% row.status %>"
+              },
+              "title": "<% 'Workers by status' %>",
+              "showPercentLabels": true,
+              "showLabelLines": true
+            }
+          ],
+          "label": "Status breakdown"
+        },
+        {
+          "type": "section",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": false,
+              "value": "Every Charts 2.0 widget takes <code>accessibilityMode</code>, which renders the same data in a screen-reader-navigable form. Canvas Kit has no equivalent switch &mdash; accessible charting there is something you build."
+            },
+            {
+              "type": "donutChart2",
+              "id": "statusDonutAccessible",
+              "accessibilityMode": true,
+              "data": "<% workerData.getStatusBreakdown() %>",
+              "dataVariableName": "row",
+              "sliceSizeDataSet": {
+                "name": "Workers",
+                "value": "<% row.workers %>"
+              },
+              "sliceColorDataSet": {
+                "name": "Status",
+                "value": "<% row.status %>"
+              },
+              "title": "<% 'Workers by status, accessible' %>"
+            }
+          ],
+          "label": "Accessibility mode"
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}

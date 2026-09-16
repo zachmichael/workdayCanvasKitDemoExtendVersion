@@ -1,0 +1,159 @@
+{
+  "id": "scripting",
+  "include": [
+    "workerData.script",
+    "scriptingDemos.script"
+  ],
+  "presentation": {
+    "pageType": "EDIT",
+    "standardEditButtonsHidden": true,
+    "title": {
+      "type": "title",
+      "label": "PMD Scripting"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "The second replacement for the Design Tokens page. Where the React app used <code>useState</code>, <code>useMemo</code> and array methods, Extend uses PMD script inside <code>&lt;% %&gt;</code>. It reads like JavaScript and is not JavaScript &mdash; the differences below are the ones that actually cost time."
+        },
+        {
+          "type": "fieldSet",
+          "title": "Where it looks like JavaScript and is not",
+          "children": [
+            {
+              "type": "grid",
+              "id": "gotchaGrid",
+              "enabled": false,
+              "doNotAdd": true,
+              "doNotRemoveRow": true,
+              "rowVariableName": "row",
+              "rows": "<% [ {'topic': 'Empty map', 'js': '{}', 'pmd': '{:}   because {} declares a Set'}, {'topic': 'For-each', 'js': 'for (const x of list)', 'pmd': 'for (let x : list)   with a colon'}, {'topic': 'Emptiness', 'js': 'list.length === 0', 'pmd': 'empty(list)   a function, not a property'}, {'topic': 'Size', 'js': 'str.length', 'pmd': 'size(str)'}, {'topic': 'Interpolation', 'js': '`Hi ${name}`', 'pmd': '`Hi {{name}}`   double braces'}, {'topic': 'Logical and', 'js': '&& or and', 'pmd': '&& only, and is a reserved word'}, {'topic': 'Ranges', 'js': 'no equivalent', 'pmd': '1 to 10   and   0 until 10'} ] %>",
+              "columns": [
+                {
+                  "type": "column",
+                  "columnId": "gotchaTopic",
+                  "label": "Topic",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.topic %>"
+                  }
+                },
+                {
+                  "type": "column",
+                  "columnId": "gotchaJs",
+                  "label": "JavaScript",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.js %>"
+                  }
+                },
+                {
+                  "type": "column",
+                  "columnId": "gotchaPmd",
+                  "label": "PMD script",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.pmd %>"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Derived values, live",
+          "children": [
+            {
+              "type": "dropdown",
+              "id": "scriptTeam",
+              "label": "Pick a team",
+              "instanceList": "<% workerData.getTeamInstances() %>",
+              "onChange": "<% teamMembers.value = scriptingDemos.namesForTeam(workerData.getWorkers(), self.value) %>"
+            },
+            {
+              "type": "textArea",
+              "id": "teamMembers",
+              "label": "list:filter + list:mapAttribute + string:formatListToString",
+              "enabled": false,
+              "value": ""
+            },
+            {
+              "type": "text",
+              "id": "interpolated",
+              "label": "Backtick interpolation with {{ }}",
+              "enabled": false,
+              "value": "<% scriptingDemos.greetingFor(workerData.getWorkers()[0]) %>"
+            },
+            {
+              "type": "text",
+              "id": "reviewDue",
+              "label": "date:add + date:format, 30 days out",
+              "enabled": false,
+              "value": "<% scriptingDemos.reviewDueDate(30) %>"
+            },
+            {
+              "type": "number",
+              "id": "longTitleCount",
+              "label": "Closure filter: titles longer than 15 characters",
+              "enabled": false,
+              "value": "<% size(scriptingDemos.longTitles(workerData.getWorkers())) %>"
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Sorting without useMemo",
+          "children": [
+            {
+              "type": "grid",
+              "id": "sortedGrid",
+              "enabled": false,
+              "doNotAdd": true,
+              "doNotRemoveRow": true,
+              "rowVariableName": "worker",
+              "rows": "<% scriptingDemos.sortedByLocation(workerData.getWorkers()) %>",
+              "columns": [
+                {
+                  "type": "column",
+                  "columnId": "sortedName",
+                  "label": "Worker",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% worker.name %>"
+                  }
+                },
+                {
+                  "type": "column",
+                  "columnId": "sortedLocation",
+                  "label": "Location",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% worker.location %>"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}

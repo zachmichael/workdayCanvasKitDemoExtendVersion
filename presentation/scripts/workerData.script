@@ -1,0 +1,86 @@
+/*
+ * Port of src/data/employees.ts from the React Canvas Kit demo.
+ *
+ * A .script module is a PMD script library: statements first, then a trailing
+ * object literal mapping exported names to the functions above it. A page pulls
+ * it in with "include": ["workerData.script"] and calls it by module name, for
+ * example <% workerData.getWorkers() %>.
+ *
+ * PMD script is not JavaScript. Three differences bite here:
+ *   - {} declares a SET; an empty map is {:}
+ *   - the for-each form is  for (let item : list)  with a colon, not "in"
+ *   - empty() and size() are functions, not properties
+ */
+
+var getWorkers = function() {
+  return [
+    {'id': 1, 'name': 'Amara Okafor', 'title': 'Staff Engineer', 'team': 'Platform', 'location': 'Dublin', 'status': 'Active'},
+    {'id': 2, 'name': 'Rin Takahashi', 'title': 'Product Designer', 'team': 'Design Systems', 'location': 'Tokyo', 'status': 'Active'},
+    {'id': 3, 'name': 'Diego Moreau', 'title': 'Engineering Manager', 'team': 'Payroll', 'location': 'Montreal', 'status': 'On leave'},
+    {'id': 4, 'name': 'Priya Raghunathan', 'title': 'Data Analyst', 'team': 'People Analytics', 'location': 'Bengaluru', 'status': 'Active'},
+    {'id': 5, 'name': 'Noor Haddad', 'title': 'Accessibility Lead', 'team': 'Design Systems', 'location': 'Amman', 'status': 'Active'},
+    {'id': 6, 'name': 'Tomas Lindqvist', 'title': 'QA Engineer', 'team': 'Platform', 'location': 'Stockholm', 'status': 'Contract ended'},
+    {'id': 7, 'name': 'Grace Mwangi', 'title': 'Technical Writer', 'team': 'Design Systems', 'location': 'Nairobi', 'status': 'Active'},
+    {'id': 8, 'name': 'Eli Rosenthal', 'title': 'Frontend Engineer', 'team': 'Payroll', 'location': 'Tel Aviv', 'status': 'Onboarding'},
+    {'id': 9, 'name': 'Wei Chen', 'title': 'Principal Architect', 'team': 'Platform', 'location': 'Singapore', 'status': 'Active'},
+    {'id': 10, 'name': 'Sofia Marchetti', 'title': 'Product Manager', 'team': 'People Analytics', 'location': 'Milan', 'status': 'On leave'},
+    {'id': 11, 'name': 'Kwame Asante', 'title': 'DevOps Engineer', 'team': 'Platform', 'location': 'Accra', 'status': 'Active'},
+    {'id': 12, 'name': 'Hanna Bakke', 'title': 'UX Researcher', 'team': 'Design Systems', 'location': 'Oslo', 'status': 'Active'}
+  ]
+}
+
+/* Derived rather than hard-coded, so the team list can never drift from the data. */
+var getTeams = function() {
+  return list:mapAttribute(getWorkers(), 'team').distinct().sort()
+}
+
+/* radioGroup and dropdown want {id, descriptor} instances, not bare strings. */
+var getTeamInstances = function() {
+  const instances = [];
+  for (let team : getTeams()) {
+    instances.add({'id': team, 'descriptor': team});
+  }
+  return instances;
+}
+
+/* Headcount per team, shaped for the chart widgets on the charts page. */
+var getHeadcountByTeam = function() {
+  const counts = {:};
+  for (let worker : getWorkers()) {
+    counts.put(worker.team, (counts.get(worker.team) ?? 0) + 1);
+  }
+  const rows = [];
+  for (let team : getTeams()) {
+    rows.add({'team': team, 'headcount': counts.get(team)});
+  }
+  return rows;
+}
+
+var getStatusBreakdown = function() {
+  const counts = {:};
+  for (let worker : getWorkers()) {
+    counts.put(worker.status, (counts.get(worker.status) ?? 0) + 1);
+  }
+  const rows = [];
+  for (let status : counts.keys()) {
+    rows.add({'status': status, 'workers': counts.get(status)});
+  }
+  return rows;
+}
+
+/* Powers the team filter on the worker directory page. */
+var getWorkersForTeam = function(team) {
+  if (empty(team) || team == 'All teams') {
+    return getWorkers();
+  }
+  return list:filter(getWorkers(), 'team', team);
+}
+
+{
+  "getWorkers": getWorkers,
+  "getTeams": getTeams,
+  "getTeamInstances": getTeamInstances,
+  "getHeadcountByTeam": getHeadcountByTeam,
+  "getStatusBreakdown": getStatusBreakdown,
+  "getWorkersForTeam": getWorkersForTeam
+}

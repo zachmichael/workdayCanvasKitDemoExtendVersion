@@ -1,0 +1,155 @@
+{
+  "id": "home",
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Canvas Kit Demo, rebuilt on Workday Extend"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "This is the React <b>Canvas Kit component showcase</b> rebuilt as a Workday Extend app. Same idea, different platform: every page shows live widgets, and each one can reveal the PMD JSON that produced it.<br/><br/>The biggest difference is what is <i>not</i> here. Canvas Kit gives you design tokens, a styling API and control over every pixel. Extend gives you none of that on purpose &mdash; the Workday UI engine owns the styling, so an Extend app declares <i>what</i> a page contains and never <i>how</i> it looks. The tokens page from the React app has no counterpart; a charts page and a scripting page take its place."
+        },
+        {
+          "type": "section",
+          "horizontal": true,
+          "columnWidthRatios": [
+            0.5,
+            0.5
+          ],
+          "children": [
+            {
+              "type": "fieldSet",
+              "title": "Ported from the React app",
+              "children": [
+                {
+                  "type": "button",
+                  "label": "Buttons",
+                  "action": "LINK",
+                  "commandHttpMethod": "GET",
+                  "taskReference": {
+                    "taskId": "buttons"
+                  }
+                },
+                {
+                  "type": "button",
+                  "label": "Forms and Inputs",
+                  "action": "LINK",
+                  "commandHttpMethod": "GET",
+                  "taskReference": {
+                    "taskId": "forms"
+                  }
+                },
+                {
+                  "type": "button",
+                  "label": "Data Display",
+                  "action": "LINK",
+                  "commandHttpMethod": "GET",
+                  "taskReference": {
+                    "taskId": "workerDirectory"
+                  }
+                },
+                {
+                  "type": "button",
+                  "label": "Feedback",
+                  "action": "LINK",
+                  "commandHttpMethod": "GET",
+                  "taskReference": {
+                    "taskId": "feedback"
+                  }
+                },
+                {
+                  "type": "button",
+                  "label": "Navigation",
+                  "action": "LINK",
+                  "commandHttpMethod": "GET",
+                  "taskReference": {
+                    "taskId": "navigation"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "fieldSet",
+              "title": "Extend-specific, replacing Design Tokens",
+              "children": [
+                {
+                  "type": "button",
+                  "label": "Charts",
+                  "action": "LINK",
+                  "commandHttpMethod": "GET",
+                  "taskReference": {
+                    "taskId": "charts"
+                  }
+                },
+                {
+                  "type": "button",
+                  "label": "PMD Scripting",
+                  "action": "LINK",
+                  "commandHttpMethod": "GET",
+                  "taskReference": {
+                    "taskId": "scripting"
+                  }
+                },
+                {
+                  "type": "richText",
+                  "enabled": false,
+                  "value": "Charts are Extend's richest visual widget family and the closest thing to a &ldquo;look what the platform gives you&rdquo; page. Scripting shows the <code>&lt;% %&gt;</code> expression language that stands in for the React app's <code>useState</code> and derived values."
+                }
+              ]
+            }
+          ],
+          "label": "Pages"
+        },
+        {
+          "type": "fieldSet",
+          "title": "How this maps to the React app",
+          "children": [
+            {
+              "type": "grid",
+              "id": "mappingGrid",
+              "enabled": false,
+              "doNotAdd": true,
+              "doNotRemoveRow": true,
+              "rowVariableName": "row",
+              "rows": "<% [ {'react': 'CanvasProvider + BrowserRouter', 'extend': 'SMD + AMD tasks with routingPattern'}, {'react': 'React component (Button, Table)', 'extend': 'PMD widget tag {\"type\": \"button\"}'}, {'react': 'AppShell.tsx sidebar nav', 'extend': 'home.pmd buttons + header.pod on each page'}, {'react': 'DemoSection.tsx show-code toggle', 'extend': 'pageActionButton flipping a section.visible'}, {'react': 'employees.ts mock data', 'extend': 'workerData.script module'}, {'react': 'useState local state', 'extend': 'widget values read and written in <% %>'}, {'react': 'createStencil / design tokens', 'extend': 'no equivalent, the UI engine owns styling'} ] %>",
+              "columns": [
+                {
+                  "type": "column",
+                  "columnId": "react",
+                  "label": "React + Canvas Kit",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.react %>"
+                  }
+                },
+                {
+                  "type": "column",
+                  "columnId": "extend",
+                  "label": "Workday Extend",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.extend %>"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}
