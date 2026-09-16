@@ -1,0 +1,9 @@
+{
+  "id": 2,
+  "name": "ViewTimeOffRequests",
+  "label": "View Time Off Requests",
+  "routePath": "/myRequests",
+  "securityDomains": [
+    "ManageTimeOff"
+  ]
+}

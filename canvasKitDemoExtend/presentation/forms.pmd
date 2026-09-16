@@ -1,11 +1,37 @@
 {
   "id": "forms",
+  "securityDomains": [
+    "ManageTimeOff"
+  ],
   "include": [
     "workerData.script"
   ],
+  "endPoints": [
+    {
+      "name": "worker",
+      "baseUrlType": "workday-staffing",
+      "url": "workers/me",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "timeOffRequest",
+        "baseUrlType": "app",
+        "url": "timeOffRequests",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "onSend": "<% self.data.put('worker', {'id': worker.id}); self.data.put('status', 'Submitted'); self.data.put('requestId', `{{worker.id}}-{{date:getTodaysDate(date:getDateTimeZone(userTimeZone))}}-{{leaveType.value}}`); return self.data; %>"
+      }
+    ],
+    "responseErrorDetail": {
+      "errorSummary": "<% error %>",
+      "errors": "<% errors.map(item => { item.error }); %>"
+    }
+  },
   "presentation": {
     "pageType": "EDIT",
-    "standardEditButtonsHidden": true,
     "title": {
       "type": "title",
       "label": "Forms and Inputs"
@@ -21,40 +47,41 @@
         {
           "type": "richText",
           "enabled": false,
-          "value": "Canvas Kit wraps every input in a <code>FormField</code> that owns the label, hint and error state. Extend has no wrapper: <code>label</code> is an attribute on the widget itself, and grouping is done with <code>fieldSet</code>. Validation is declarative too &mdash; <code>required</code> and <code>errorMessage</code> rather than a <code>touched</code> flag in component state."
+          "value": "Canvas Kit wraps every input in a <code>FormField</code> that owns the label, hint and error state. Extend has no wrapper: <code>label</code> is an attribute on the widget itself, and grouping is done with <code>fieldSet</code>. Validation is declarative &mdash; <code>required</code> and <code>helpText</code> rather than a <code>touched</code> flag in component state.<br/><br/>Unlike the React demo, this form is real. Each field carries a <code>valueOutBinding</code> naming where its value lands in the outbound payload, and submitting POSTs a <code>TimeOffRequest</code> business object. The submit and cancel buttons are the platform's, not the app's."
         },
         {
           "type": "fieldSet",
-          "title": "A time-off request",
+          "title": "Request time off",
           "children": [
             {
               "type": "text",
-              "id": "workerName",
-              "label": "Worker name",
-              "required": true,
-              "value": "",
-              "enabled": true
+              "id": "requestingWorker",
+              "label": "Worker",
+              "enabled": false,
+              "value": "<% worker.descriptor %>",
+              "helpText": "Taken from workers/me. The request is stamped with this worker in onSend, so the payload cannot be spoofed from the page."
             },
             {
               "type": "dropdown",
               "id": "leaveType",
               "label": "Leave type",
               "required": true,
+              "valueOutBinding": "timeOffRequest.leaveType",
               "instanceList": [
                 {
-                  "id": "pto",
+                  "id": "Paid time off",
                   "descriptor": "Paid time off"
                 },
                 {
-                  "id": "sick",
+                  "id": "Sick leave",
                   "descriptor": "Sick leave"
                 },
                 {
-                  "id": "parental",
+                  "id": "Parental leave",
                   "descriptor": "Parental leave"
                 },
                 {
-                  "id": "unpaid",
+                  "id": "Unpaid leave",
                   "descriptor": "Unpaid leave"
                 }
               ]
@@ -63,41 +90,77 @@
               "type": "date",
               "id": "startDate",
               "label": "First day off",
+              "required": true,
               "enabled": true,
+              "valueOutBinding": "timeOffRequest.startDate",
               "value": "<% date:getTodaysDate(date:getDateTimeZone(userTimeZone)) %>"
             },
             {
               "type": "number",
               "id": "daysRequested",
               "label": "Days requested",
+              "required": true,
               "enabled": true,
-              "value": "<% 1 %>"
+              "minimumValue": "1",
+              "maximumValue": "30",
+              "valueOutBinding": "timeOffRequest.daysRequested",
+              "value": "<% 1 %>",
+              "helpText": "Requests over 10 days set the requiresSecondApproval derived field on the business object."
             },
             {
               "type": "textArea",
               "id": "requestReason",
               "label": "Reason",
               "enabled": true,
+              "valueOutBinding": "timeOffRequest.reason",
               "value": ""
             },
             {
               "type": "checkBox",
               "id": "notifyManager",
               "label": "Notify my manager immediately",
+              "valueOutBinding": "timeOffRequest.notifyManager",
               "value": "<% true %>"
-            },
-            {
-              "type": "pageActionButton",
-              "id": "submitRequest",
-              "visible": true,
-              "label": "Submit request",
-              "onClick": "<% if (empty(workerName.value)) { requestSummary.value = 'Enter the worker this request is for.'; } else { requestSummary.value = `Request recorded for {{workerName.value}}: {{daysRequested.value}} day(s) starting {{startDate.value}}.`; } %>"
-            },
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "Where the value goes",
+          "children": [
             {
               "type": "richText",
-              "id": "requestSummary",
               "enabled": false,
-              "value": ""
+              "value": "<code>valueOutBinding</code> is the piece with no Canvas Kit counterpart. In React you read state and build the request body yourself; here each widget declares its own path into the payload, and the platform assembles it. <code>onSend</code> then adds what the page must not be trusted to supply &mdash; the worker, the status and the reference id."
+            },
+            {
+              "type": "grid",
+              "id": "bindingGrid",
+              "enabled": false,
+              "doNotAdd": true,
+              "doNotRemoveRow": true,
+              "rowVariableName": "row",
+              "rows": "<% [ {'widget': 'leaveType (dropdown)', 'binding': 'timeOffRequest.leaveType'}, {'widget': 'startDate (date)', 'binding': 'timeOffRequest.startDate'}, {'widget': 'daysRequested (number)', 'binding': 'timeOffRequest.daysRequested'}, {'widget': 'requestReason (textArea)', 'binding': 'timeOffRequest.reason'}, {'widget': 'notifyManager (checkBox)', 'binding': 'timeOffRequest.notifyManager'}, {'widget': 'none, set in onSend', 'binding': 'worker, status, requestId'} ] %>",
+              "columns": [
+                {
+                  "type": "column",
+                  "columnId": "bindingWidget",
+                  "label": "Widget",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.widget %>"
+                  }
+                },
+                {
+                  "type": "column",
+                  "columnId": "bindingPath",
+                  "label": "valueOutBinding",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.binding %>"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -108,7 +171,7 @@
             {
               "type": "richText",
               "enabled": false,
-              "value": "The React demo showed default, caution, error and disabled variants of one input. Extend exposes <code>required</code>, <code>errorMessage</code>, <code>enabled</code> and <code>hint</code>; there is no caution tier."
+              "value": "The React demo showed default, caution, error and disabled variants. Extend exposes <code>required</code>, <code>helpText</code> and <code>enabled</code>; there is no caution tier. These fields are unbound, so they demonstrate the states without joining the payload."
             },
             {
               "type": "text",
@@ -125,16 +188,6 @@
               "required": true,
               "value": "",
               "helpText": "Leave this empty and submit to see the platform error treatment.",
-              "enabled": true
-            },
-            {
-              "type": "number",
-              "id": "boundedField",
-              "label": "Constrained number",
-              "value": "<% 4 %>",
-              "minimumValue": "0",
-              "maximumValue": "30",
-              "helpText": "Values outside 0 to 30 are rejected by the widget, not by page script.",
               "enabled": true
             },
             {
@@ -184,26 +237,6 @@
               "enabled": true
             }
           ]
-        },
-        {
-          "type": "pageActionButton",
-          "id": "toggleFormsSource",
-          "visible": true,
-          "label": "Show code",
-          "onClick": "<% formsSourceSection.visible = !formsSourceSection.visible; toggleFormsSource.label = formsSourceSection.visible ? 'Hide code' : 'Show code'; %>"
-        },
-        {
-          "type": "section",
-          "id": "formsSourceSection",
-          "visible": false,
-          "children": [
-            {
-              "type": "richText",
-              "enabled": false,
-              "value": "<code>{ \"type\": \"text\", \"id\": \"workerName\", \"label\": \"Worker name\", \"required\": true }</code><br/><code>{ \"type\": \"dropdown\", \"label\": \"Leave type\", \"instanceList\": [ { \"id\": \"pto\", \"descriptor\": \"Paid time off\" } ] }</code><br/><code>{ \"type\": \"radioGroup\", \"label\": \"Team\", \"instanceList\": \"&lt;% workerData.getTeamInstances() %&gt;\" }</code>"
-            }
-          ],
-          "label": "PMD source"
         }
       ]
     },

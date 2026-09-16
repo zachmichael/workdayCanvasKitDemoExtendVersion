@@ -1,0 +1,95 @@
+{
+  "id": 1,
+  "name": "TimeOffRequest",
+  "label": "Time Off Request",
+  "defaultSecurityDomains": [
+    "ManageTimeOff"
+  ],
+  "defaultCollection": {
+    "name": "timeOffRequests",
+    "label": "All Time Off Requests",
+    "description": "Every time off request submitted through the Canvas Kit Demo app"
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "requestId",
+      "type": "TEXT",
+      "label": "Request ID",
+      "isReferenceId": true,
+      "description": "Unique reference for the request, generated on submit"
+    },
+    {
+      "id": 2,
+      "name": "worker",
+      "type": "SINGLE_INSTANCE",
+      "label": "Worker",
+      "target": "WORKER",
+      "secureByTarget": true,
+      "description": "The worker the request is for. secureByTarget means a user only sees requests for workers they are contextually secured to."
+    },
+    {
+      "id": 3,
+      "name": "leaveType",
+      "type": "TEXT",
+      "label": "Leave Type",
+      "useForDisplay": true,
+      "description": "Paid time off, sick leave, parental leave or unpaid leave"
+    },
+    {
+      "id": 4,
+      "name": "startDate",
+      "type": "DATE",
+      "label": "First Day Off",
+      "precision": "DAY",
+      "description": "First day of the requested absence"
+    },
+    {
+      "id": 5,
+      "name": "daysRequested",
+      "type": "INTEGER",
+      "label": "Days Requested",
+      "description": "Number of days off requested"
+    },
+    {
+      "id": 6,
+      "name": "reason",
+      "type": "TEXT",
+      "label": "Reason",
+      "description": "Optional note from the requester, visible to the approver"
+    },
+    {
+      "id": 7,
+      "name": "notifyManager",
+      "type": "BOOLEAN",
+      "label": "Notify Manager",
+      "description": "Whether to notify the manager as soon as the request is submitted"
+    },
+    {
+      "id": 8,
+      "name": "status",
+      "type": "TEXT",
+      "label": "Status",
+      "enableIndex": true,
+      "description": "Submitted, Approved or Denied"
+    }
+  ],
+  "derivedFields": [
+    {
+      "id": 1,
+      "name": "requiresSecondApproval",
+      "type": "BOOLEAN",
+      "label": "Requires Second Approval",
+      "expression": "daysRequested > 10",
+      "description": "Requests longer than 10 days route to the approver's approver"
+    },
+    {
+      "id": 2,
+      "name": "lengthBand",
+      "type": "TEXT",
+      "label": "Length Band",
+      "expression": "daysRequested > 10 ? 'Long' : (daysRequested > 4 ? 'Standard' : 'Short')",
+      "description": "Bucketed request length, for reporting"
+    }
+  ]
+}

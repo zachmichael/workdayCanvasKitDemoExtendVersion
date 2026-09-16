@@ -1,0 +1,66 @@
+{
+  "id": 1,
+  "name": "AllTimeOffRequests",
+  "businessObject": "TimeOffRequest",
+  "defaultSecurityDomains": [
+    "ManageTimeOff"
+  ],
+  "sortConfigs": [
+    {
+      "id": 1,
+      "order": "a",
+      "field": "startDate",
+      "direction": "DESCENDING"
+    }
+  ],
+  "columns": [
+    {
+      "id": 1,
+      "name": "Request ID",
+      "order": "a",
+      "field": "requestId"
+    },
+    {
+      "id": 2,
+      "name": "Worker",
+      "order": "b",
+      "field": "worker"
+    },
+    {
+      "id": 3,
+      "name": "Leave Type",
+      "order": "c",
+      "field": "leaveType"
+    },
+    {
+      "id": 4,
+      "name": "First Day Off",
+      "order": "d",
+      "field": "startDate"
+    },
+    {
+      "id": 5,
+      "name": "Days Requested",
+      "order": "e",
+      "field": "daysRequested"
+    },
+    {
+      "id": 6,
+      "name": "Status",
+      "order": "f",
+      "field": "status"
+    },
+    {
+      "id": 7,
+      "name": "Length Band",
+      "order": "g",
+      "field": "lengthBand"
+    },
+    {
+      "id": 8,
+      "name": "Requires Second Approval",
+      "order": "h",
+      "field": "requiresSecondApproval"
+    }
+  ]
+}

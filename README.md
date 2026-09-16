@@ -20,6 +20,12 @@ README.md                              not part of the bundle
 tools/                                 not part of the bundle; the checks described below
 canvasKitDemoExtend/                   <- the uploadable app bundle
   appManifest.json                     referenceId + display name
+  model/
+    ManageTimeOff.securitydomain       secures the object and both time-off pages
+    TimeOffRequest.businessobject      persistent object; generates a REST collection
+    AllTimeOffRequests.report          delivered report over the object
+    RequestTimeOff.task                exposes /forms as a searchable Workday task
+    ViewTimeOffRequests.task           exposes /myRequests likewise
   presentation/
     canvasKitDemoExtend.smd            site metadata: auth schemes
     canvasKitDemoExtend.amd            app metadata: tasks, routingPatterns, dataProviders
@@ -27,6 +33,7 @@ canvasKitDemoExtend/                   <- the uploadable app bundle
     buttons.pmd                        button, buttonGroup, dropDownButton, pageActionButton
     forms.pmd                          text, dropdown, date, number, checkBox, radioGroup, currency
     workerDirectory.pmd                grid with sorting, filtering, paging
+    myRequests.pmd                     reads the persisted requests back
     feedback.pmd                       inline messages, progressIndicator, guide, congratulationsPopup
     navigation.pmd                     tabs, dropDownButton menu, the routing table
     charts.pmd                         clusteredBarChart2, donutChart2, accessibility mode
@@ -35,10 +42,37 @@ canvasKitDemoExtend/                   <- the uploadable app bundle
     scripts/                           workerData (the employees.ts port), scriptingDemos
 ```
 
-There is no `model/` and no `orchestration/`. This app is presentation-only: no business objects,
-security domains, business processes or orchestrations, because nothing here persists data. Most
-real Extend apps have at least a `model/` directory, so the absence is worth noticing rather than
-copying.
+There is no `orchestration/`, because nothing here runs server-side. Apps ship only the directories
+they use rather than empty placeholders — `chartDictionary` is presentation-only, `learningEnrollments`
+is orchestration-only, `capitalProjectPlanning` has all four.
+
+## The model layer
+
+The showcase pages are self-contained and read local data. Two pages are different: `forms.pmd`
+writes a real `TimeOffRequest`, and `myRequests.pmd` reads them back. That exists to exercise the
+parts of Extend a pure widget gallery never touches — persistence and security.
+
+What the five model files buy, none of which is page code:
+
+| Component | What the platform generates from it |
+| --- | --- |
+| `TimeOffRequest.businessobject` | A persistent object, a REST collection at `app/v1/timeOffRequests`, and a report data source |
+| `ManageTimeOff.securitydomain` | A domain securing the object and both pages, granted to security groups in the tenant |
+| `AllTimeOffRequests.report` | A delivered report, including the derived fields |
+| `RequestTimeOff.task`, `ViewTimeOffRequests.task` | Make the two routes searchable Workday tasks rather than only URLs |
+| `derivedFields` | `requiresSecondApproval` and `lengthBand`, computed by the platform |
+
+Three things here have no Canvas Kit counterpart at all:
+
+**`valueOutBinding`.** In React you read state and assemble the request body yourself. Here each
+widget declares its own path into the outbound payload and the platform assembles it.
+
+**`onSend`.** Fields the page must not be trusted to supply — the worker, the status, the reference
+id — are stamped server-side on the way out, not gathered from inputs.
+
+**`secureByTarget`.** The `worker` field delegates contextual security to the target instance, so a
+user sees only requests for workers they are secured to. That filtering is a field attribute, not a
+`WHERE` clause and not a `filter()` in page code.
 
 ## How the two apps correspond
 
@@ -123,11 +157,27 @@ It defaults to the `canvasKitDemoExtend/` bundle and `../extendreference/referen
 arguments to override. It exits non-zero if either path is missing, so a misconfigured run fails
 loudly rather than passing on an empty set.
 
+Presentation:
+
 - every `.pmd` / `.pod` / `.amd` / `.smd` parses as **strict** JSON
 - every `"type"` is one of the 124 known widget types
 - every attribute is documented for that widget in `widget-attrs.json`
 - every `taskReference.taskId` resolves to an AMD task, every page is routed, every `include` and
   `podId` resolves, every file is under the 100 KB component limit
+
+Model:
+
+- field types are real (`TEXT`, `RICH_TEXT`, `DATE`, `CURRENCY`, `BOOLEAN`, `INTEGER`, `DECIMAL`,
+  `SINGLE_INSTANCE`, `MULTI_INSTANCE`), `SINGLE_INSTANCE` fields have a `target`, field ids are unique
+- the B200/B201/B203 limits Extend enforces at deploy: at most one `useForDisplay`, one
+  `isReferenceId`, one `secureByTarget` per object
+- derived fields are not `CURRENCY` or `SINGLE_INSTANCE`; component ids are integers 1..32767
+- report columns and sort fields name real fields; every `securityDomain` referenced from a model
+  component or a PMD is defined; a model `.task` `routePath` matches an AMD `routingPattern`; an
+  `app`-provider endpoint targets a real `defaultCollection`
+
+All 11 model rules were negative-control tested — each defect injected individually, each caught,
+tree restored clean.
 
 ```bash
 node tools/lint-script.mjs

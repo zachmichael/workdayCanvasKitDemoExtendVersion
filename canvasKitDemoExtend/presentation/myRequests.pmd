@@ -1,0 +1,164 @@
+{
+  "id": "myRequests",
+  "securityDomains": [
+    "ManageTimeOff"
+  ],
+  "endPoints": [
+    {
+      "name": "requests",
+      "baseUrlType": "app",
+      "url": "timeOffRequests",
+      "authType": "sso",
+      "bestEffort": true
+    }
+  ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Time Off Requests"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "This page reads back what the forms page writes. Creating the <code>TimeOffRequest</code> business object generated this REST collection automatically &mdash; no endpoint was written by hand. The grid below is the same widget as the worker directory, but its rows come from the tenant rather than from a <code>.script</code> module.<br/><br/>The list is empty until a request is submitted, and it is filtered by security, not by code: <code>worker</code> is marked <code>secureByTarget</code>, so a user sees only requests for workers they are contextually secured to."
+        },
+        {
+          "type": "grid",
+          "id": "requestGrid",
+          "enabled": false,
+          "doNotAdd": true,
+          "doNotRemoveRow": true,
+          "autoPaging": true,
+          "rowVariableName": "request",
+          "rows": "<% requests.data %>",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "requestWorker",
+              "label": "Worker",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% request.worker.descriptor %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "requestLeaveType",
+              "label": "Leave type",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% request.leaveType %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "requestStart",
+              "label": "First day off",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "date",
+                "enabled": false,
+                "value": "<% request.startDate %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "requestDays",
+              "label": "Days",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "number",
+                "enabled": false,
+                "value": "<% request.daysRequested %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "requestBand",
+              "label": "Length band",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% request.lengthBand %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "requestStatus",
+              "label": "Status",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% request.status %>"
+              }
+            }
+          ]
+        },
+        {
+          "type": "fieldSet",
+          "title": "What the model layer bought",
+          "children": [
+            {
+              "type": "grid",
+              "id": "modelGrid",
+              "enabled": false,
+              "doNotAdd": true,
+              "doNotRemoveRow": true,
+              "rowVariableName": "row",
+              "rows": "<% [ {'file': 'TimeOffRequest.businessobject', 'gives': 'A persistent object, a REST collection at app/v1/timeOffRequests, and a report data source'}, {'file': 'ManageTimeOff.securitydomain', 'gives': 'A domain securing the object and both pages; granted to security groups in the tenant'}, {'file': 'AllTimeOffRequests.report', 'gives': 'A delivered report over the object, including its derived fields'}, {'file': 'RequestTimeOff.task', 'gives': 'Makes /forms a searchable Workday task rather than only a URL'}, {'file': 'derivedFields', 'gives': 'requiresSecondApproval and lengthBand, computed by the platform, not the page'} ] %>",
+              "columns": [
+                {
+                  "type": "column",
+                  "columnId": "modelFile",
+                  "label": "Model component",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.file %>"
+                  }
+                },
+                {
+                  "type": "column",
+                  "columnId": "modelGives",
+                  "label": "What it generates",
+                  "cellTemplate": {
+                    "type": "text",
+                    "value": "<% row.gives %>"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "id": "newRequestButton",
+          "label": "New request",
+          "action": "PRIMARY",
+          "commandHttpMethod": "GET",
+          "taskReference": {
+            "taskId": "forms"
+          }
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}

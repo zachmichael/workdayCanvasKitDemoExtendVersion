@@ -9,6 +9,14 @@
   "flowDefinitions": [],
   "dataProviders": [
     {
+      "key": "app",
+      "value": "<% apiGatewayEndpoint + '/apps/' + site.applicationId + '/v1/' %>"
+    },
+    {
+      "key": "workday-staffing",
+      "value": "<% apiGatewayEndpoint + '/staffing/v1/' %>"
+    },
+    {
       "key": "wdayRef",
       "value": "<% apiGatewayEndpoint + '/referenceData' %>"
     },
@@ -40,6 +48,14 @@
       "page": {
         "id": "forms",
         "descriptor": "Forms and Inputs"
+      }
+    },
+    {
+      "id": "myRequests",
+      "routingPattern": "/myRequests",
+      "page": {
+        "id": "myRequests",
+        "descriptor": "Time Off Requests"
       }
     },
     {

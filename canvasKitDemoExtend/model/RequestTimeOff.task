@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "name": "RequestTimeOff",
+  "label": "Request Time Off",
+  "routePath": "/forms",
+  "securityDomains": [
+    "ManageTimeOff"
+  ]
+}

@@ -55,6 +55,15 @@
                 },
                 {
                   "type": "button",
+                  "label": "Time Off Requests (persisted)",
+                  "action": "LINK",
+                  "commandHttpMethod": "GET",
+                  "taskReference": {
+                    "taskId": "myRequests"
+                  }
+                },
+                {
+                  "type": "button",
                   "label": "Feedback",
                   "action": "LINK",
                   "commandHttpMethod": "GET",

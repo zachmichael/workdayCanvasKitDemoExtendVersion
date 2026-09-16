@@ -1,0 +1,6 @@
+{
+  "id": 1,
+  "name": "ManageTimeOff",
+  "label": "Manage: Time Off Requests",
+  "enabledForPageSecurity": true
+}
