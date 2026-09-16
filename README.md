@@ -10,23 +10,35 @@ Development tenant through App Builder or WDCLI. Nothing here has been run in a 
 
 ## Layout
 
+The app bundle lives in `canvasKitDemoExtend/` and contains **only** app content, so it can be
+uploaded as-is. Repo furniture — this README, the checks, `.gitignore` — stays at the repo root and
+outside the bundle. That mirrors a tenant download, which is `appManifest.json` plus component
+directories and nothing else.
+
 ```
-appManifest.json                     referenceId + display name
-presentation/
-  canvasKitDemoExtend.smd            site metadata: auth schemes
-  canvasKitDemoExtend.amd            app metadata: tasks, routingPatterns, dataProviders
-  home.pmd                           landing page and the React/Extend mapping table
-  buttons.pmd                        button, buttonGroup, dropDownButton, pageActionButton
-  forms.pmd                          text, dropdown, date, number, checkBox, radioGroup, currency
-  workerDirectory.pmd                grid with sorting, filtering, paging
-  feedback.pmd                       inline messages, progressIndicator, guide, congratulationsPopup
-  navigation.pmd                     tabs, dropDownButton menu, the routing table
-  charts.pmd                         clusteredBarChart2, donutChart2, accessibility mode
-  scripting.pmd                      PMD script vs JavaScript, live derived values
-  pods/                              header (back link) and footer, shared by every page
-  scripts/                           workerData (the employees.ts port), scriptingDemos
-tools/                               the two checks described below
+README.md                              not part of the bundle
+tools/                                 not part of the bundle; the checks described below
+canvasKitDemoExtend/                   <- the uploadable app bundle
+  appManifest.json                     referenceId + display name
+  presentation/
+    canvasKitDemoExtend.smd            site metadata: auth schemes
+    canvasKitDemoExtend.amd            app metadata: tasks, routingPatterns, dataProviders
+    home.pmd                           landing page and the React/Extend mapping table
+    buttons.pmd                        button, buttonGroup, dropDownButton, pageActionButton
+    forms.pmd                          text, dropdown, date, number, checkBox, radioGroup, currency
+    workerDirectory.pmd                grid with sorting, filtering, paging
+    feedback.pmd                       inline messages, progressIndicator, guide, congratulationsPopup
+    navigation.pmd                     tabs, dropDownButton menu, the routing table
+    charts.pmd                         clusteredBarChart2, donutChart2, accessibility mode
+    scripting.pmd                      PMD script vs JavaScript, live derived values
+    pods/                              header (back link) and footer, shared by every page
+    scripts/                           workerData (the employees.ts port), scriptingDemos
 ```
+
+There is no `model/` and no `orchestration/`. This app is presentation-only: no business objects,
+security domains, business processes or orchestrations, because nothing here persists data. Most
+real Extend apps have at least a `model/` directory, so the absence is worth noticing rather than
+copying.
 
 ## How the two apps correspond
 
@@ -86,8 +98,8 @@ confirmed against `reference/api/pmd-scripting/syntax.md`:
 All data is local, in `scripts/workerData.script` — the same twelve fictional workers as the React
 app. Nothing calls a Workday API, so the app needs no domain security grants to render.
 
-To swap the directory onto real data, add an endpoint to `workerDirectory.pmd` and point the grid
-at it:
+To swap the directory onto real data, add an endpoint to
+`canvasKitDemoExtend/presentation/workerDirectory.pmd` and point the grid at it:
 
 ```json
 "endPoints": [
@@ -101,11 +113,15 @@ security groups.
 
 ## Verification
 
-Two checks ship in `tools/`. Both pass. Run them with the reference repo path:
+Two checks ship in `tools/`. Both pass. Run them from the repo root:
 
 ```bash
-node tools/validate.mjs . ../extendreference/reference
+node tools/validate.mjs
 ```
+
+It defaults to the `canvasKitDemoExtend/` bundle and `../extendreference/reference`; pass both as
+arguments to override. It exits non-zero if either path is missing, so a misconfigured run fails
+loudly rather than passing on an empty set.
 
 - every `.pmd` / `.pod` / `.amd` / `.smd` parses as **strict** JSON
 - every `"type"` is one of the 124 known widget types

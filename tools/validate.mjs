@@ -9,8 +9,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const APP = process.argv[2];
-const REF = process.argv[3];
+const APP = process.argv[2] ?? 'canvasKitDemoExtend';
+const REF = process.argv[3] ?? '../extendreference/reference';
+
+for (const [label, p] of [['app bundle', APP], ['reference', REF]]) {
+  if (!fs.existsSync(p)) {
+    console.error(`No such ${label} directory: ${p}`);
+    console.error('Usage: node tools/validate.mjs [appDir] [referenceDir]');
+    process.exit(2);
+  }
+}
 
 const attrs = JSON.parse(fs.readFileSync(path.join(REF, 'widget-attrs.json'), 'utf8'));
 const known = new Set(attrs.knownTypes);

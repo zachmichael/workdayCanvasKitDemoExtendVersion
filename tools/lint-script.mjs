@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const DIR = process.argv[2] ?? 'presentation';
+const DIR = process.argv[2] ?? 'canvasKitDemoExtend/presentation';
 if (!fs.existsSync(DIR)) {
   console.error(`No such directory: ${DIR}. Run from the app root, or pass the path.`);
   process.exit(2);
